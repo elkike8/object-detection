@@ -20,34 +20,39 @@ import torch
 import numpy as np
 import cv2
 import pafy
+import pytube
 from time import time
 
 
 class ObjectDetection:
     """
-    Class implements Yolo5 model to make inferences on a youtube video using Opencv2.
+    Class implements Yolo5 model to make inferences on a video using Opencv2.
     """
 
-    def __init__(self, url, out_file="Labeled_Video.avi"):
+    def __init__(self):
         """
         Initializes the class with youtube url and output file.
         :param url: Has to be as youtube URL,on which prediction is made.
         :param out_file: A valid output file name.
         """
-        self._URL = url
         self.model = self.load_model()
         self.classes = self.model.names
-        self.out_file = out_file
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    def get_video_from_url(self):
+    def get_video_stream(self, path_to_video):
         """
         Creates a new video streaming object to extract video frame by frame to make prediction on.
         :return: opencv2 video capture object, with lowest quality frame available for video.
         """
-        play = pafy.new(self._URL).streams[-1]
-        assert play is not None
-        return cv2.VideoCapture(play.url)
+        # play = pafy.new(self._URL).streams[-1]
+        # assert play is not None
+        # return cv2.VideoCapture(play.url)
+        video_name = path_to_video[
+            path_to_video.rfind("/") + 1 : path_to_video.rfind(".")
+        ]
+        video_path = path_to_video[: path_to_video.rfind("/") + 1]
+
+        return video_path, video_name, cv2.VideoCapture(path_to_video)
 
     def load_model(self):
         """
@@ -110,18 +115,20 @@ class ObjectDetection:
 
         return frame
 
-    def __call__(self):
+    def process_video(self, path_to_video):
         """
         This function is called when class is executed, it runs the loop to read the video frame by frame,
         and write the output into a new file.
         :return: void
         """
-        player = self.get_video_from_url()
+        video_path, video_name, player = self.get_video_stream(path_to_video)
         assert player.isOpened()
         x_shape = int(player.get(cv2.CAP_PROP_FRAME_WIDTH))
         y_shape = int(player.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        four_cc = cv2.VideoWriter_fourcc(*"MJPG")
-        out = cv2.VideoWriter(self.out_file, four_cc, 20, (x_shape, y_shape))
+        four_cc = cv2.VideoWriter_fourcc(*"mp4v")
+        out = cv2.VideoWriter(
+            f"processed-videos/{video_name}.avi", four_cc, 20, (x_shape, y_shape)
+        )
         while True:
             start_time = time()
             ret, frame = player.read()
@@ -134,11 +141,14 @@ class ObjectDetection:
             out.write(frame)
 
 
-video_1 = "https://www.youtube.com/watch?v=PKYriLfSXqg"
-video_2 = "https://www.youtube.com/watch?v=_7RfMf8FLXY"
-video_3 = "https://www.youtube.com/watch?v=Cszy1AwhB4Y"
 # Create a new object and execute.
 
 if __name__ == "__main__":
-    a = ObjectDetection(video_1)
-    a()
+
+    video_1 = "https://www.youtube.com/watch?v=PKYriLfSXqg"
+    video_2 = "https://www.youtube.com/watch?v=_7RfMf8FLXY"
+    video_3 = "https://www.youtube.com/watch?v=Cszy1AwhB4Y"
+    local_path = "test-videos/man-dog-fence.mp4"
+
+    instance = ObjectDetection()
+    instance.process_video(local_path)

@@ -8,6 +8,7 @@ __pycache__/
 /TF
 /test-videos
 /test-images
+/processed-videos
 
 # C extensions
 *.so
