@@ -17,6 +17,7 @@
 # stream = cv2.VideoCapture(camera_ip)
 
 import torch
+import keras_cv
 import numpy as np
 import cv2
 import pafy
@@ -24,7 +25,7 @@ import pytube
 from time import time
 
 
-class ObjectDetection:
+class ObjectDetector:
     """
     Class implements Yolo5 model to make inferences on a video using Opencv2.
     """
@@ -150,5 +151,5 @@ if __name__ == "__main__":
     video_3 = "https://www.youtube.com/watch?v=Cszy1AwhB4Y"
     local_path = "test-videos/man-dog-fence.mp4"
 
-    instance = ObjectDetection()
+    instance = ObjectDetector()
     instance.process_video(local_path)
