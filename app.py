@@ -13,8 +13,9 @@ class WebApp:
         self.model = self.load_model()
         self.initialize_session_state()
         self.create_sidebar()
-        self.create_class_selector()
-        self.return_selected_classes()
+        self.create_category_selector()
+        # self.create_class_selector()
+        # self.return_selected_classes()
         self.create_window()
 
     def initialize_session_state(self):
@@ -49,6 +50,32 @@ class WebApp:
             return folder_path, selected_file
         except:
             st.sidebar.error("Directory not found")
+
+    def create_category_selector(self):
+        with st.expander("select categories to be detected"):
+            classes_df = self.load_classes()
+            categories_df = pd.DataFrame(
+                classes_df["category"].unique(), columns=["categories"]
+            )
+            categories_df["enabled"] = True
+
+            data_editor = st.data_editor(
+                categories_df,
+                column_config={
+                    "enabled": st.column_config.CheckboxColumn(
+                        "enabled",
+                        help="select the categories you want the model to detect",
+                    ),
+                },
+                disabled=list(categories_df.columns[:-1]),
+                hide_index=True,
+                key="categories",
+            )
+            active_categories = data_editor[data_editor["enabled"] == True]
+            active_categories = classes_df[
+                classes_df["category"].isin(active_categories["categories"])
+            ]
+            self.selected_classes = list(active_categories.index.values)
 
     def create_class_selector(self):
         with st.expander("Select objects to be detected"):
@@ -89,7 +116,6 @@ class WebApp:
             ]
             total_df = pd.concat([total_df, temp])
         self.selected_classes = list(total_df.index.values)
-        print(self.selected_classes)
 
     def display_detected_frames(
         self,
