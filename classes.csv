@@ -1,0 +1,81 @@
+index,classes,category
+0,person,person
+1,bicycle,vehicle
+2,car,vehicle
+3,motorcycle,vehicle
+4,airplane,vehicle
+5,bus,vehicle
+6,train,vehicle
+7,truck,vehicle
+8,boat,vehicle
+9,traffic light,vehicle
+10,fire hydrant,vehicle
+11,stop sign,vehicle
+12,parking meter,vehicle
+13,bench,object
+14,bird,animal
+15,cat,animal
+16,dog,animal
+17,horse,animal
+18,sheep,animal
+19,cow,animal
+20,elephant,animal
+21,bear,animal
+22,zebra,animal
+23,giraffe,animal
+24,backpack,object
+25,umbrella,object
+26,handbag,object
+27,tie,object
+28,suitcase,object
+29,frisbee,object
+30,skis,object
+31,snowboard,object
+32,sports ball,object
+33,kite,object
+34,baseball bat,object
+35,baseball glove,object
+36,skateboard,object
+37,surfboard,object
+38,tennis racket,object
+39,bottle,object
+40,wine glass,object
+41,cup,object
+42,fork,object
+43,knife,object
+44,spoon,object
+45,bowl,object
+46,banana,food
+47,apple,food
+48,sandwich,food
+49,orange,food
+50,broccoli,food
+51,carrot,food
+52,hot dog,food
+53,pizza,food
+54,donut,food
+55,cake,food
+56,chair,object
+57,couch,object
+58,potted plant,object
+59,bed,object
+60,dining table,object
+61,toilet,object
+62,tv,tech
+63,laptop,tech
+64,mouse,tech
+65,remote,tech
+66,keyboard,tech
+67,cell phone,tech
+68,microwave,object
+69,oven,object
+70,toaster,object
+71,sink,object
+72,refrigerator,object
+73,book,object
+74,clock,object
+75,vase,object
+76,scissors,object
+77,teddy bear,object
+78,hair drier,object
+79,toothbrush,object

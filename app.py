@@ -13,6 +13,8 @@ class WebApp:
         self.model = self.load_model()
         self.initialize_session_state()
         self.create_sidebar()
+        self.create_class_selector()
+        self.return_selected_classes()
         self.create_window()
 
     def initialize_session_state(self):
@@ -25,12 +27,7 @@ class WebApp:
 
     @st.cache_data
     def load_classes(_self):
-        df = pd.DataFrame(
-            {
-                "classes": model_classes.values(),
-                "enabled": [False for c in model_classes],
-            }
-        )
+        df = pd.read_csv("classes.csv", index_col=0)
         return df
 
     def create_sidebar(self):
@@ -56,21 +53,43 @@ class WebApp:
     def create_class_selector(self):
         with st.expander("Select objects to be detected"):
             classes_df = self.load_classes()
+            classes_df["enabled"] = False
 
-            edited_df = st.data_editor(
-                classes_df,
-                column_config={
-                    "enabled": st.column_config.CheckboxColumn(
-                        "Enabled",
-                        help="Select the classes you want the model to detect",
-                    )
-                },
-                disabled=["Classes"],
-                hide_index=True,
-            )
+            self.columns = list(classes_df.columns)
 
-            filtered_df = edited_df[edited_df["enabled"] == True]
-            self.selected_classes = list(filtered_df.index.values)
+            self.categories = list(classes_df["category"].unique())
+
+            self.filtered_df = {}
+
+            for i, category in enumerate(self.categories):
+                self.filtered_df[category] = classes_df[
+                    classes_df["category"] == category
+                ]
+                self.filtered_df[category] = st.data_editor(
+                    self.filtered_df[category],
+                    column_config={
+                        "enabled": st.column_config.CheckboxColumn(
+                            "enabled",
+                            help="Select the classes you want the model to detect",
+                        )
+                    },
+                    disabled=list(classes_df.columns[:-1]),
+                    hide_index=True,
+                    key=category,
+                )
+
+    def return_selected_classes(self):
+
+        total_df = pd.DataFrame(columns=self.columns)
+
+        for category in self.categories:
+
+            temp = self.filtered_df[category][
+                self.filtered_df[category]["enabled"] == True
+            ]
+            total_df = pd.concat([total_df, temp])
+        self.selected_classes = list(total_df.index.values)
+        print(self.selected_classes)
 
     def display_detected_frames(
         self,
@@ -103,7 +122,6 @@ class WebApp:
     def create_window(self):
 
         st.title("Object Detection Prototype")
-        self.create_class_selector()
 
         try:
 
