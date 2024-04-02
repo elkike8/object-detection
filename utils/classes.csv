@@ -1,0 +1,81 @@
+index,classes,category
+0,Person,Person
+1,Bicycle,Vehicle
+2,Car,Vehicle
+3,Motorcycle,Vehicle
+4,Airplane,Vehicle
+5,Bus,Vehicle
+6,Train,Vehicle
+7,Truck,Vehicle
+8,Boat,Vehicle
+9,Traffic Light,Vehicle
+10,Fire Hydrant,Vehicle
+11,Stop Sign,Vehicle
+12,Parking Meter,Vehicle
+13,Bench,Object
+14,Bird,Animal
+15,Cat,Animal
+16,Dog,Animal
+17,Horse,Animal
+18,Sheep,Animal
+19,Cow,Animal
+20,Elephant,Animal
+21,Bear,Animal
+22,Zebra,Animal
+23,Giraffe,Animal
+24,Backpack,Object
+25,Umbrella,Object
+26,Handbag,Object
+27,Tie,Object
+28,Suitcase,Object
+29,Frisbee,Object
+30,Skis,Object
+31,Snowboard,Object
+32,Sports Ball,Object
+33,Kite,Object
+34,Baseball Bat,Object
+35,Baseball Glove,Object
+36,Skateboard,Object
+37,Surfboard,Object
+38,Tennis Racket,Object
+39,Bottle,Object
+40,Wine Glass,Object
+41,Cup,Object
+42,Fork,Object
+43,Knife,Object
+44,Spoon,Object
+45,Bowl,Object
+46,Banana,Food
+47,Apple,Food
+48,Sandwich,Food
+49,Orange,Food
+50,Broccoli,Food
+51,Carrot,Food
+52,Hot Dog,Food
+53,Pizza,Food
+54,Donut,Food
+55,Cake,Food
+56,Chair,Object
+57,Couch,Object
+58,Potted Plant,Object
+59,Bed,Object
+60,Dining Table,Object
+61,Toilet,Object
+62,Tv,Tech
+63,Laptop,Tech
+64,Mouse,Tech
+65,Remote,Tech
+66,Keyboard,Tech
+67,Cell Phone,Tech
+68,Microwave,Object
+69,Oven,Object
+70,Toaster,Object
+71,Sink,Object
+72,Refrigerator,Object
+73,Book,Object
+74,Clock,Object
+75,Vase,Object
+76,Scissors,Object
+77,Teddy Bear,Object
+78,Hair Drier,Object
+79,Toothbrush,Object

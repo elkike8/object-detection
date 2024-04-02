@@ -27,7 +27,7 @@ class WebApp:
         Returns:
             model: A pretrained object detection model.
         """
-        return YOLO("yolov8n.pt")
+        return YOLO("utils/yolov8n.pt")
 
     @st.cache_data
     def load_classes(_self):
@@ -39,7 +39,7 @@ class WebApp:
         Returns:
             dataframe: A dataframe containing the classes the model recognizes.
         """
-        df = pd.read_csv("classes.csv", index_col=0)
+        df = pd.read_csv("utils/classes.csv", index_col=0)
         return df
 
     def page_setup(self):
@@ -48,26 +48,47 @@ class WebApp:
         st.set_page_config(
             page_title=title,
             page_icon=":movie_camera:",
-            layout="wide",
+            # layout="wide",
         )
         st.title(title)
 
     def create_sidebar(self):
         """Created a side bar for the streamlit app. The sidebar contains variables that send arguments to the object detection model."""
         with st.sidebar:
-            # select from a video or a webcam feed
-            self.inference_source = st.radio(
-                "Inference Source", ["Video", "Webcam"], index=0, disabled=False
-            )
             # select to display the original video or the processed "real time" images from the model
             self.show_processed_video = st.radio(
-                "Choose feed", ["Original", "Processed"], index=0, disabled=False
+                "Choose which video to display",
+                ["Original", "Processed"],
+                index=0,
+                disabled=False,
             )
-            # lowest confidence the boxes will be displayed
-            self.confidence = st.slider("Desired confidence:", 0.1, 1.0, 0.2, 0.1)
-            # the higher the iou the less likely boxes will appear over overlapped objects
-            # higher values also help avoiding double boxes over single objects
-            self.iou = st.slider("Desired Intersection Over Union:", 0.1, 1.0, 0.7, 0.1)
+
+            # show options for processed videos
+            if self.show_processed_video == "Processed":
+
+                # select from a video or a webcam feed
+                self.inference_source = st.radio(
+                    "Inference Source", ["Video", "Webcam"], index=0, disabled=False
+                )
+
+                # lowest confidence the boxes will be displayed
+                self.confidence = st.slider("Desired confidence:", 0.1, 1.0, 0.2, 0.1)
+
+                # display confidence
+                self.confidence_displayed_bar = st.radio(
+                    "Display Confidence Score", ["Yes", "No"], index=0, disabled=False
+                )
+
+                if self.confidence_displayed_bar == "No":
+                    self.display_confidence = False
+                else:
+                    self.display_confidence = True
+
+                # the higher the iou the less likely boxes will appear over overlapped objects
+                # higher values also help avoiding double boxes over single objects
+                self.iou = st.slider(
+                    "Desired Intersection Over Union:", 0.1, 1.0, 0.7, 0.1
+                )
 
     def create_category_selector(self):
         """Creates a streamlit element that allows the user to select which object categories will they like the model to detect."""
@@ -159,13 +180,56 @@ class WebApp:
         )
 
         # plot the detected objects over the streamlit object
-        boxes_plotted = y_pred[0].plot()
+        boxes_plotted = y_pred[0].plot(conf=self.display_confidence, line_width=2)
+
         st_frame.image(
             boxes_plotted,
             caption="Detected Video",
             channels="BGR",
             use_column_width=True,
         )
+
+    def resize_image_with_pad(
+        self,
+        image: np.array,
+        new_shape: Tuple[int, int],
+        padding_color: Tuple[int] = (255, 255, 255),
+    ) -> np.array:
+        """Resizes and pads (if necessary) an image to a desired size.
+
+        Args:
+            image (np.array): image to be processed
+            new_shape (Tuple[int, int]): desired output size of the image
+            padding_color (Tuple[int], optional): RGB for the color tu use as padding. Defaults to white (255, 255, 255).
+
+        Returns:
+            np.array: resized and padded image
+        """
+        original_shape = (image.shape[1], image.shape[0])
+        ratio = float(max(new_shape)) / max(original_shape)
+        new_size = tuple([int(x * ratio) for x in original_shape])
+
+        if new_size[0] > new_shape[0] or new_size[1] > new_shape[1]:
+            ratio = float(min(new_shape)) / min(original_shape)
+            new_size = tuple([int(x * ratio) for x in original_shape])
+
+        image = cv2.resize(image, new_size)
+        delta_w = new_shape[0] - new_size[0]
+        delta_h = new_shape[1] - new_size[1]
+        top, bottom = delta_h // 2, delta_h - (delta_h // 2)
+        left, right = delta_w // 2, delta_w - (delta_w // 2)
+
+        image = cv2.copyMakeBorder(
+            image,
+            top,
+            bottom,
+            left,
+            right,
+            cv2.BORDER_CONSTANT,
+            None,
+            value=padding_color,
+        )
+        return image
 
     def create_main_window(self):
         """Places the main visual elements on the streamlit app."""
@@ -213,48 +277,6 @@ class WebApp:
 
         except TypeError:
             st.markdown("we couldn't find")
-
-    def resize_image_with_pad(
-        self,
-        image: np.array,
-        new_shape: Tuple[int, int],
-        padding_color: Tuple[int] = (255, 255, 255),
-    ) -> np.array:
-        """Resizes and pads (if necessary) an image to a desired size.
-
-        Args:
-            image (np.array): image to be processed
-            new_shape (Tuple[int, int]): desired output size of the image
-            padding_color (Tuple[int], optional): RGB for the color tu use as padding. Defaults to white (255, 255, 255).
-
-        Returns:
-            np.array: resized and padded image
-        """
-        original_shape = (image.shape[1], image.shape[0])
-        ratio = float(max(new_shape)) / max(original_shape)
-        new_size = tuple([int(x * ratio) for x in original_shape])
-
-        if new_size[0] > new_shape[0] or new_size[1] > new_shape[1]:
-            ratio = float(min(new_shape)) / min(original_shape)
-            new_size = tuple([int(x * ratio) for x in original_shape])
-
-        image = cv2.resize(image, new_size)
-        delta_w = new_shape[0] - new_size[0]
-        delta_h = new_shape[1] - new_size[1]
-        top, bottom = delta_h // 2, delta_h - (delta_h // 2)
-        left, right = delta_w // 2, delta_w - (delta_w // 2)
-
-        image = cv2.copyMakeBorder(
-            image,
-            top,
-            bottom,
-            left,
-            right,
-            cv2.BORDER_CONSTANT,
-            None,
-            value=padding_color,
-        )
-        return image
 
 
 if __name__ == "__main__":
