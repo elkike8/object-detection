@@ -219,6 +219,7 @@ class WebApp:
             iou=self.iou,
             device=self.device,
             classes=self.selected_classes,
+            verbose=False,
         )
 
         # plot the detected objects over the streamlit object
