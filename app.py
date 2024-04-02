@@ -209,7 +209,7 @@ class WebApp:
         """
         # Resize (and pad if necessary) the image to a standard size
         # according to the docs, best results are achieved when the image size is divisible by 64 since if fits properly into the convolution layers
-        image = self.resize_image_with_pad(image, (960, 960))
+        image = self.resize_image_with_pad(image, (640, 640))
 
         # predict the objects in the image
         y_pred = model.predict(
@@ -222,7 +222,9 @@ class WebApp:
         )
 
         # plot the detected objects over the streamlit object
-        boxes_plotted = y_pred[0].plot(conf=self.display_confidence, line_width=2)
+        boxes_plotted = y_pred[0].plot(
+            conf=self.display_confidence, line_width=2, labels=True
+        )
 
         st_frame.image(
             boxes_plotted,
