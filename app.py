@@ -152,43 +152,6 @@ class WebApp:
         except:
             st.sidebar.error("Directory not found")
 
-    def display_detected_frames(
-        self,
-        model,
-        st_frame,
-        image,
-    ):
-        """Uses the model to detect objects over frames of the original video. Display the detected boxes over the processed image.
-
-        Args:
-            model (_type_): the pretrained object detection model.
-            st_frame (_type_): streamlit object to display the processed image
-            image (_type_): the current frame of the video to be processed
-        """
-        # Resize (and pad if necessary) the image to a standard size
-        # according to the docs, best results are achieved when the image size is divisible by 64 since if fits properly into the convolution layers
-        image = self.resize_image_with_pad(image, (960, 960))
-
-        # predict the objects in the image
-        y_pred = model.predict(
-            image,
-            conf=self.confidence,
-            stream_buffer=True,
-            iou=self.iou,
-            device=self.device,
-            classes=self.selected_classes,
-        )
-
-        # plot the detected objects over the streamlit object
-        boxes_plotted = y_pred[0].plot(conf=self.display_confidence, line_width=2)
-
-        st_frame.image(
-            boxes_plotted,
-            caption="Detected Video",
-            channels="BGR",
-            use_column_width=True,
-        )
-
     def resize_image_with_pad(
         self,
         image: np.array,
@@ -230,6 +193,43 @@ class WebApp:
             value=padding_color,
         )
         return image
+
+    def display_detected_frames(
+        self,
+        model,
+        st_frame,
+        image,
+    ):
+        """Uses the model to detect objects over frames of the original video. Display the detected boxes over the processed image.
+
+        Args:
+            model (_type_): the pretrained object detection model.
+            st_frame (_type_): streamlit object to display the processed image
+            image (_type_): the current frame of the video to be processed
+        """
+        # Resize (and pad if necessary) the image to a standard size
+        # according to the docs, best results are achieved when the image size is divisible by 64 since if fits properly into the convolution layers
+        image = self.resize_image_with_pad(image, (960, 960))
+
+        # predict the objects in the image
+        y_pred = model.predict(
+            image,
+            conf=self.confidence,
+            stream_buffer=True,
+            iou=self.iou,
+            device=self.device,
+            classes=self.selected_classes,
+        )
+
+        # plot the detected objects over the streamlit object
+        boxes_plotted = y_pred[0].plot(conf=self.display_confidence, line_width=2)
+
+        st_frame.image(
+            boxes_plotted,
+            caption="Detected Video",
+            channels="BGR",
+            use_column_width=True,
+        )
 
     def create_main_window(self):
         """Places the main visual elements on the streamlit app."""
