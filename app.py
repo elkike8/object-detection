@@ -72,7 +72,7 @@ class WebApp:
                 )
 
                 # lowest confidence the boxes will be displayed
-                self.confidence = st.slider("Desired confidence:", 0.1, 1.0, 0.2, 0.1)
+                self.confidence = st.slider("Desired confidence:", 10, 100, 20, 10)
 
                 # display confidence
                 self.confidence_displayed_bar = st.radio(
@@ -214,7 +214,7 @@ class WebApp:
         # predict the objects in the image
         y_pred = model.predict(
             image,
-            conf=self.confidence,
+            conf=self.confidence / 100,
             stream_buffer=True,
             iou=self.iou,
             device=self.device,

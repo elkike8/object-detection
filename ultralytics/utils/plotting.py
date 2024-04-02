@@ -32,6 +32,7 @@ class Colors:
 
     def __init__(self):
         """Initialize colors as hex = matplotlib.colors.TABLEAU_COLORS.values()."""
+        #! Changed for just white boxes, old colors are grayed out
         hexs = (
             "FFFFFF",
             # "000000",
@@ -187,9 +188,8 @@ class Annotator:
         label="",
         color=(128, 128, 128),
         txt_color=(255, 255, 255),
-        # txt_color=(0, 0, 0),
         rotated=False,
-        with_fill=True,
+        with_fill=True, #! added to change the appearance of the labels
     ):
         """Add one xyxy box to image with label."""
         if isinstance(box, torch.Tensor):
@@ -212,7 +212,7 @@ class Annotator:
                         p1[0] + w + 1,
                         p1[1] + 1 if outside else p1[1] + h + 1,
                     ),
-                    # fill=color,
+                    fill=color,
                 )
                 # self.draw.text((box[0], box[1]), label, fill=txt_color, font=self.font, anchor='ls')  # for PIL>8.0
                 self.draw.text(
@@ -242,9 +242,7 @@ class Annotator:
                 if with_fill:
                     cv2.rectangle(self.im, p1, p2, color, -1, cv2.LINE_AA)  # filled
                     txt_color = (0, 0, 0)
-                # cv2.rectangle(
-                #     self.im, p1, p2, color, self.lw, cv2.LINE_AA
-                # )  # not filled
+
                 cv2.putText(
                     self.im,
                     label,
