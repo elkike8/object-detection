@@ -231,6 +231,8 @@ class Results(SimpleClass):
         show=False,
         save=False,
         filename=None,
+        box_colors=None,  #! added to modify colors from running script
+        with_fill=True,  #! added to add and remove fill from the box label
     ):
         """
         Plots the detection results on an input RGB image. Accepts a numpy array (cv2) or a PIL Image.
@@ -315,6 +317,11 @@ class Results(SimpleClass):
 
         # Plot Detect results
         if pred_boxes is not None and show_boxes:
+
+            # #! added for custom box colors
+            # if box_colors != None:
+            #     colors.redefine_palette(box_colors)
+
             for d in reversed(pred_boxes):
                 c, conf, id = (
                     int(d.cls),

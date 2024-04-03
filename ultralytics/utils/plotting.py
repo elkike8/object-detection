@@ -32,10 +32,9 @@ class Colors:
 
     def __init__(self):
         """Initialize colors as hex = matplotlib.colors.TABLEAU_COLORS.values()."""
-        #! Changed for just white boxes, old colors are grayed out
         hexs = (
             "FFFFFF",
-            # "000000",
+            "000000",
             # "FF3838",
             # "FF9D97",
             # "FF701F",
@@ -89,6 +88,11 @@ class Colors:
         """Converts hex color codes to RGB values."""
         c = self.palette[int(i) % self.n]
         return (c[2], c[1], c[0]) if bgr else c
+
+    #! added to add custom palette from running script
+    def redefine_palette(self, box_colors: list = ()):
+        hexs = box_colors
+        self.palette = [self.hex2rgb(f"#{c}") for c in hexs]
 
     @staticmethod
     def hex2rgb(h):
@@ -189,7 +193,7 @@ class Annotator:
         color=(128, 128, 128),
         txt_color=(255, 255, 255),
         rotated=False,
-        with_fill=True, #! added to change the appearance of the labels
+        with_fill=True,  #! added to change the appearance of the labels
     ):
         """Add one xyxy box to image with label."""
         if isinstance(box, torch.Tensor):

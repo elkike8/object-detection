@@ -224,7 +224,10 @@ class WebApp:
 
         # plot the detected objects over the streamlit object
         boxes_plotted = y_pred[0].plot(
-            conf=self.display_confidence, line_width=2, labels=True
+            conf=self.display_confidence,
+            line_width=2,
+            labels=True,
+            # box_colors=("FFFFFF", "000000"),
         )
 
         st_frame.image(
