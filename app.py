@@ -227,7 +227,6 @@ class WebApp:
             conf=self.display_confidence,
             line_width=2,
             labels=True,
-            # box_colors=("FFFFFF", "000000"),
         )
 
         st_frame.image(

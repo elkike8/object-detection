@@ -32,6 +32,7 @@ class Colors:
 
     def __init__(self):
         """Initialize colors as hex = matplotlib.colors.TABLEAU_COLORS.values()."""
+        #! changed for monochromatic palette
         hexs = (
             "FFFFFF",
             "000000",
@@ -56,6 +57,7 @@ class Colors:
             # "FF95C8",
             # "FF37C7",
         )
+
         self.palette = [self.hex2rgb(f"#{c}") for c in hexs]
         self.n = len(self.palette)
         self.pose_palette = np.array(
@@ -84,15 +86,10 @@ class Colors:
             dtype=np.uint8,
         )
 
-    def __call__(self, i, bgr=False):
+    def __call__(self, i, bgr=False, alt_palette=False):
         """Converts hex color codes to RGB values."""
         c = self.palette[int(i) % self.n]
         return (c[2], c[1], c[0]) if bgr else c
-
-    #! added to add custom palette from running script
-    def redefine_palette(self, box_colors: list = ()):
-        hexs = box_colors
-        self.palette = [self.hex2rgb(f"#{c}") for c in hexs]
 
     @staticmethod
     def hex2rgb(h):
