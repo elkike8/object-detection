@@ -10,7 +10,7 @@ __pycache__/
 # /test-videos
 /test-images
 /processed-videos
-/oldcode
+/old-code
 
 # C extensions
 *.so
