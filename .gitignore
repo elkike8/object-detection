@@ -7,9 +7,10 @@ __pycache__/
 *$py.class
 
 /TF
-/test-videos
+# /test-videos
 /test-images
 /processed-videos
+/oldcode
 
 # C extensions
 *.so

@@ -72,7 +72,7 @@ class WebApp:
                 )
 
                 # lowest confidence the boxes will be displayed
-                self.confidence = st.slider("Desired confidence:", 0.1, 1.0, 0.2, 0.1)
+                self.confidence = st.slider("Desired confidence:", 10, 100, 20, 10)
 
                 # display confidence
                 self.confidence_displayed_bar = st.radio(
@@ -209,20 +209,25 @@ class WebApp:
         """
         # Resize (and pad if necessary) the image to a standard size
         # according to the docs, best results are achieved when the image size is divisible by 64 since if fits properly into the convolution layers
-        image = self.resize_image_with_pad(image, (960, 960))
+        image = self.resize_image_with_pad(image, (640, 640))
 
         # predict the objects in the image
         y_pred = model.predict(
             image,
-            conf=self.confidence,
+            conf=self.confidence / 100,
             stream_buffer=True,
             iou=self.iou,
             device=self.device,
             classes=self.selected_classes,
+            verbose=False,
         )
 
         # plot the detected objects over the streamlit object
-        boxes_plotted = y_pred[0].plot(conf=self.display_confidence, line_width=2)
+        boxes_plotted = y_pred[0].plot(
+            conf=self.display_confidence,
+            line_width=2,
+            labels=True,
+        )
 
         st_frame.image(
             boxes_plotted,
